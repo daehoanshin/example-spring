@@ -1,15 +1,16 @@
 package me.xbb123.mvc.service;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import me.xbb123.framework.data.domain.PageRequestParameter;
 import me.xbb123.mvc.domain.Board;
 import me.xbb123.mvc.parameter.BoardParameter;
+import me.xbb123.mvc.parameter.BoardSearchParameter;
 import me.xbb123.mvc.repository.BoardRepository;
 
 
@@ -28,8 +29,8 @@ public class BoardService {
 	 * 목록 리턴.
 	 * @return
 	 */
-	public List<Board> getList() {
-		return repository.getList();
+	public List<Board> getList(PageRequestParameter<BoardSearchParameter> pageRequestParameter) {
+		return repository.getList(pageRequestParameter);
 	}
 	
 	/**

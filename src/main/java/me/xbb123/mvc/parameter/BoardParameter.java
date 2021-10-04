@@ -19,7 +19,4 @@ public class BoardParameter {
 		this.title = title;
 		this.contents = contents;
 	}
-
-	
-	
 }

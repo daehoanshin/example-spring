@@ -1,9 +1,11 @@
 package me.xbb123.mvc.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +21,16 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import me.xbb123.configuration.exception.BaseException;
 import me.xbb123.configuration.http.BaseResponseCode;
 import me.xbb123.configuration.http.BaseRespose;
+import me.xbb123.framework.data.domain.PageRequestParameter;
 import me.xbb123.mvc.domain.Board;
+import me.xbb123.mvc.domain.BoardType;
+import me.xbb123.mvc.domain.MySQLPageRequest;
 import me.xbb123.mvc.parameter.BoardParameter;
+import me.xbb123.mvc.parameter.BoardSearchParameter;
 import me.xbb123.mvc.service.BoardService;
 
 /**
@@ -48,10 +55,14 @@ public class BoardController {
 	 * @return
 	 */
 	@GetMapping
-	@ApiOperation(value = "목록조회", notes = "게시물 목록 정보를 조회할 수 있습니다.")
-	public BaseRespose<List<Board>> getList() {
-		logger.info("getList");
-		return new BaseRespose<List<Board>>(boardService.getList());
+	@ApiOperation(value = "목록조회", notes = "게시물 목록 정보를 조회할 수 있습니다.")	
+	public BaseRespose<List<Board>> getList(
+			@ApiParam BoardSearchParameter parameter,
+			@ApiParam MySQLPageRequest pageRequest) {
+		logger.info("pageRequest : {}", pageRequest);
+		PageRequestParameter<BoardSearchParameter> pageRequestParameter = new PageRequestParameter<BoardSearchParameter>(pageRequest, parameter);
+		
+		return new BaseRespose<List<Board>>(boardService.getList(pageRequestParameter));
 	}
 
 	/**
@@ -128,8 +139,8 @@ public class BoardController {
 			count++;
 			String title = RandomStringUtils.randomAlphabetic(10);
 			String contents = RandomStringUtils.randomAlphabetic(10);
-			
-			list.add(new BoardParameter(null, title, contents));
+//			
+			list.add(new BoardParameter(BoardType.INQUIRY, title, contents));
 			if (count >= 10000) {
 				break;
 			}
