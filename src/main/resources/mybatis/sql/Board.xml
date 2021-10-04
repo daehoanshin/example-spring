@@ -7,6 +7,7 @@
 	<select id="getList" parameterType="me.xbb123.mvc.domain.Board" resultType="me.xbb123.mvc.domain.Board">
 		SELECT
 			B.BOARD_SEQ,
+			B.BOARD_TYPE,
 			B.TITLE,
 			B.CONTENTS,
 			B.REG_DATE
@@ -17,6 +18,7 @@
 	<select id="get" parameterType="int" resultType="me.xbb123.mvc.domain.Board">
 		SELECT
 			B.BOARD_SEQ,
+			B.BOARD_TYPE,
 			B.TITLE,
 			B.CONTENTS,
 			B.REG_DATE
@@ -27,12 +29,14 @@
 	<insert id="save" parameterType="me.xbb123.mvc.parameter.BoardParameter" useGeneratedKeys="true" keyProperty="boardSeq">
 		INSERT INTO T_BOARD
 		(
+			BOARD_TYPE,
 			TITLE,
 			CONTENTS,
 			REG_DATE		
 		)
 		VALUES
 		(
+			#{boardType.code},
 			#{title},
 			#{contents},
 			NOW()
@@ -52,5 +56,21 @@
 		WHERE BOARD_SEQ = #{boardSeq}					
 	</delete>
 	
+	<insert id="saveList" parameterType="map">
+		INSERT INTO T_BOARD
+		(
+			TITLE,
+			CONTENTS,
+			REG_DATE
+		)
+		VALUES
+		<foreach collection="boardList" item="board" separator=",">
+		(
+			#{board.title},
+			#{board.contents},
+			NOW()
+		)
+		</foreach>
+	</insert>
 	
 </mapper>

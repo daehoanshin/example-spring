@@ -1,7 +1,11 @@
 package me.xbb123.mvc.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,6 +37,8 @@ import me.xbb123.mvc.service.BoardService;
 @Api(tags = "게시판 API")
 public class BoardController {
 
+	Logger logger = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private BoardService boardService;
 
@@ -44,6 +50,7 @@ public class BoardController {
 	@GetMapping
 	@ApiOperation(value = "목록조회", notes = "게시물 목록 정보를 조회할 수 있습니다.")
 	public BaseRespose<List<Board>> getList() {
+		logger.info("getList");
 		return new BaseRespose<List<Board>>(boardService.getList());
 	}
 
@@ -73,6 +80,7 @@ public class BoardController {
 	@PutMapping
 	@ApiOperation(value = "등록 / 수정 처리", notes = "신구 게시물 저장 및 기존 게시물 업데이트가 가능합니다.")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "boardSeq", value = "게시물 번호", example = "1"),
+			@ApiImplicitParam(name = "boardType", value = "타입", example = "NOTICE"),
 			@ApiImplicitParam(name = "title", value = "제목", example = "spring"),
 			@ApiImplicitParam(name = "contents", value = "강좌", example = "spring 강좌") })
 	public BaseRespose<Integer> save(BoardParameter parameter) {
@@ -102,6 +110,61 @@ public class BoardController {
 			return new BaseRespose<Boolean>(false);
 		}
 		boardService.delete(boardSeq);
+		return new BaseRespose<Boolean>(true);
+	}
+
+	/**
+	 * 대용량 등록 처리.
+	 * 
+	 * @return
+	 */
+	@PutMapping("/saveList1")
+	@ApiOperation(value = "대용량 등록 처리1", notes = "대용량 등록 처리1")
+	public BaseRespose<Boolean> saveList1() {
+		int count = 0;
+		// 테스트를 위한 랜덤 1000건의 데이터를 생성
+		List<BoardParameter> list = new ArrayList<BoardParameter>();
+		while (true) {
+			count++;
+			String title = RandomStringUtils.randomAlphabetic(10);
+			String contents = RandomStringUtils.randomAlphabetic(10);
+			
+			list.add(new BoardParameter(null, title, contents));
+			if (count >= 10000) {
+				break;
+			}
+		}
+		long start = System.currentTimeMillis();
+		boardService.saveList1(list);
+		long end = System.currentTimeMillis();
+		logger.info("실행시간 : {}", (end - start) / 1000.0);
+		return new BaseRespose<Boolean>(true);
+	}
+
+	/**
+	 * 대용량 등록 처리 2.
+	 * 
+	 * @return
+	 */
+	@PutMapping("/saveList2")
+	@ApiOperation(value = "대용량 등록 처리2", notes = "대용량 등록 처리2")
+	public BaseRespose<Boolean> saveList2() {
+		int count = 0;
+		// 테스트를 위한 랜덤 1000건의 데이터를 생성
+		List<BoardParameter> list = new ArrayList<BoardParameter>();
+		while (true) {
+			count++;
+			String title = RandomStringUtils.randomAlphabetic(10);
+			String contents = RandomStringUtils.randomAlphabetic(10);
+			list.add(new BoardParameter(null, title, contents));
+			if (count >= 10000) {
+				break;
+			}
+		}
+		long start = System.currentTimeMillis();
+		boardService.saveList2(list);
+		long end = System.currentTimeMillis();
+		logger.info("실행시간 : {}", (end - start) / 1000.0);
 		return new BaseRespose<Boolean>(true);
 	}
 }
