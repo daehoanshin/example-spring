@@ -38,10 +38,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 		return new BaseHandlerInterceptor();
 	}
 
-	@Override
-	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(baseHandlerInterceptor());
-	}
 	
 	@Bean
 	public ObjectMapper objectMapper() {
@@ -59,9 +55,21 @@ public class WebConfiguration implements WebMvcConfigurer {
 		jsonView.setObjectMapper(objectMapper());
 		return jsonView;
 	}
+	
+	@Bean
+	public GlobalConfig config() {
+		return new GlobalConfig();
+	}
+	
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(baseHandlerInterceptor());
+	}
+	
 
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+		// 페이지 리졸버 등록
 		resolvers.add(new MySQLPageRequestHandleMethodArgumentResolver());
 	}
 	
