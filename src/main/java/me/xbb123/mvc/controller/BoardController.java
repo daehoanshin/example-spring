@@ -26,6 +26,7 @@ import me.xbb123.configuration.exception.BaseException;
 import me.xbb123.configuration.http.BaseResponseCode;
 import me.xbb123.configuration.http.BaseRespose;
 import me.xbb123.framework.data.domain.PageRequestParameter;
+import me.xbb123.framework.web.bind.annotation.RequestConfig;
 import me.xbb123.mvc.domain.Board;
 import me.xbb123.mvc.domain.BoardType;
 import me.xbb123.mvc.domain.MySQLPageRequest;
@@ -89,6 +90,7 @@ public class BoardController {
 	 * @param parameter
 	 */
 	@PutMapping
+	@RequestConfig
 	@ApiOperation(value = "등록 / 수정 처리", notes = "신구 게시물 저장 및 기존 게시물 업데이트가 가능합니다.")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "boardSeq", value = "게시물 번호", example = "1"),
 			@ApiImplicitParam(name = "boardType", value = "타입", example = "NOTICE"),
@@ -113,6 +115,7 @@ public class BoardController {
 	 * @param boardSeq
 	 */
 	@DeleteMapping("/{boardSeq}")
+	@RequestConfig
 	@ApiOperation(value = "삭제 처리", notes = "게시물 번호에 해당하는 정보를 삭제합니다.")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "boardSeq", value = "게시물 번호", example = "1"), })
 	public BaseRespose<Boolean> delete(@PathVariable int boardSeq) {

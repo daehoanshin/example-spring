@@ -4,13 +4,18 @@
 
 <mapper namespace="me.xbb123.mvc.repository.BoardRepository">
 
-	<select id="getList" parameterType="me.xbb123.framework.data.domain.PageRequestParameter" resultType="me.xbb123.mvc.domain.Board">
+	<resultMap type="me.xbb123.mvc.domain.Board" id="getListResultMap">
+		<result column="DEL_YN" property="delYn" typeHandler="me.xbb123.configuration.mybatis.typehandler.StringValueBooleanTypeHandler" />
+	</resultMap>
+	
+	<select id="getList" parameterType="me.xbb123.framework.data.domain.PageRequestParameter" resultMap="getListResultMap">
 		SELECT
 			B.BOARD_SEQ,
 			B.BOARD_TYPE,
 			B.TITLE,
 			B.CONTENTS,
-			B.REG_DATE
+			B.REG_DATE,
+			B.DEL_YN
 		FROM T_BOARD B
 		
 		<where>
@@ -49,14 +54,16 @@
 			BOARD_TYPE,
 			TITLE,
 			CONTENTS,
-			REG_DATE		
+			REG_DATE,
+			DEL_YN		
 		)
 		VALUES
 		(
 			#{boardType.code},
 			#{title},
 			#{contents},
-			NOW()
+			NOW(),
+			#{delYn, typeHandler=me.xbb123.configuration.mybatis.typehandler.StringValueBooleanTypeHandler}
 		)					
 	</insert>
 	
