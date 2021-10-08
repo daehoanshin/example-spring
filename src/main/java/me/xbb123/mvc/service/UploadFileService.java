@@ -3,6 +3,7 @@ package me.xbb123.mvc.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import me.xbb123.mvc.domain.UploadFile;
 import me.xbb123.mvc.parameter.UploadFileParameter;
 import me.xbb123.mvc.repository.UploadFileRepository;
 
@@ -25,6 +26,11 @@ public class UploadFileService {
 	 */
 	public void save(UploadFileParameter parameter) {
 		repository.save(parameter);
+	}
+
+
+	public UploadFile get(int uploadFileSeq) {
+		return repository.get(uploadFileSeq);
 	}
 	
 }

@@ -1,7 +1,5 @@
 package me.xbb123.mvc.parameter;
 
-import java.util.List;
-
 import lombok.Data;
 import me.xbb123.mvc.domain.BoardType;
 
@@ -13,5 +11,5 @@ import me.xbb123.mvc.domain.BoardType;
 @Data
 public class BoardSearchParameter {
 	private String keyword;
-	private List<BoardType> boardTypes;
+	private BoardType[] boardTypes;
 }

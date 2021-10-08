@@ -2,6 +2,7 @@ package me.xbb123.mvc.repository;
 
 import org.springframework.stereotype.Repository;
 
+import me.xbb123.mvc.domain.UploadFile;
 import me.xbb123.mvc.parameter.UploadFileParameter;
 
 /**
@@ -13,4 +14,6 @@ import me.xbb123.mvc.parameter.UploadFileParameter;
 public interface UploadFileRepository {
 	
 	void save(UploadFileParameter parameter);
+
+	UploadFile get(int uploadFileSeq);
 }
