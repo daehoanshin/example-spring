@@ -19,44 +19,16 @@
 				<blockquote class="blockquote mb-0">
 					<p>${board.contents}</p>
 					<footer class="blockquote-footer">
-						Someone famous in <cite title="Source Title">Source Title</cite>
+						<fmt:formatDate value="${board.regDate}" pattern="yyyy.MM.dd HH:mm" />
 					</footer>
 				</blockquote>
 			</div>
 		</div>
 		<div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
-			<a href="/board/list" class="btn btn-primary" type="button"><spring:message code="button.list" /></a>
-			<a href="/board/edit/${board.boardSeq}" class="btn btn-primary" type="button"><spring:message code="button.edit" /></a>
+			<a href="/${menuType}" class="btn btn-secondary" type="button"><spring:message code="button.list" /></a>
+			<a href="/${menuType}/edit/${board.boardSeq}" class="btn btn-primary" type="button"><spring:message code="button.edit" /></a>
 		</div>
 	</div>
-	
-	
-	
-	<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
-	<script type="text/javascript">
-	$(function() {
-		
-		var $form = $('#form');
-		$form.bind('submit', function() {
-			$.ajax({
-				url: '/board/list',
-				type: 'get',
-				data: $form.serialize(),
-				dataType: 'json',
-				success: function(data) {
-					if(data.code == 'SUCCESS') {
-						alert('저장되었습니다.');
-					} else {
-						alert(data.message);
-					}
-					//console.log(data);
-				}
-			});
-			return false;
-		});
-		
-	});
-	
-	</script>
+
 </body>
 </html>
