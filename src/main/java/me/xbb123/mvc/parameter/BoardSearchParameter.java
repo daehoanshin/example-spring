@@ -11,5 +11,5 @@ import me.xbb123.mvc.domain.BoardType;
 @Data
 public class BoardSearchParameter {
 	private String keyword;
-	private BoardType[] boardTypes;
+	private BoardType boardTypes;
 }

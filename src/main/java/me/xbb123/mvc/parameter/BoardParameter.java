@@ -10,10 +10,10 @@ public class BoardParameter {
 	private String title;
 	private String contents;
 	private boolean delYn;
-
 	
-	public BoardParameter() {
-	}
+	
+	public BoardParameter() { }
+	 
 	
 	public BoardParameter(BoardType boardType, String title, String contents) {
 		this.boardType = boardType;

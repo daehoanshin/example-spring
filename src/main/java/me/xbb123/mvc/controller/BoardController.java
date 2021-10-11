@@ -9,12 +9,16 @@ import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.Api;
@@ -29,6 +33,7 @@ import me.xbb123.framework.data.domain.PageRequestParameter;
 import me.xbb123.framework.web.bind.annotation.RequestConfig;
 import me.xbb123.mvc.domain.Board;
 import me.xbb123.mvc.domain.BoardType;
+import me.xbb123.mvc.domain.MenuType;
 import me.xbb123.mvc.domain.MySQLPageRequest;
 import me.xbb123.mvc.parameter.BoardParameter;
 import me.xbb123.mvc.parameter.BoardSearchParameter;
@@ -40,7 +45,8 @@ import me.xbb123.mvc.service.BoardService;
  * @author xbb123
  *
  */
-@RestController
+//@RestController
+@Controller
 @RequestMapping("/board")
 @Api(tags = "게시판 API")
 public class BoardController {
@@ -50,9 +56,11 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 
+	
 	/**
 	 * 목록 리턴.
-	 * 
+	 * @param parameter
+	 * @param pageRequest
 	 * @return
 	 */
 	@GetMapping
@@ -65,14 +73,15 @@ public class BoardController {
 		
 		return new BaseRespose<List<Board>>(boardService.getList(pageRequestParameter));
 	}
-
+	
 	/**
 	 * 상세 정보 리턴.
 	 * 
 	 * @param boardSeq
 	 * @return
 	 */
-	@GetMapping("/{boardSeq}")
+	@GetMapping("/get/{boardSeq}")
+	@ResponseBody
 	@ApiOperation(value = "상세조회", notes = "게시물 번호에 해당하는 상세 정보를 조회할 수 있습니다.")
 	@ApiImplicitParams({ @ApiImplicitParam(name = "boardSeq", value = "게시물 번호", example = "1") })
 	public BaseRespose<Board> get(@PathVariable int boardSeq) {
@@ -83,20 +92,95 @@ public class BoardController {
 		}
 		return new BaseRespose<Board>(boardService.get(boardSeq));
 	}
+	
+	/**
+	 * 목록 리턴.
+	 * @param menuType
+	 * @param parameter
+	 * @param pageRequest
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/{menuType}")
+	public String list(@PathVariable MenuType menuType, BoardSearchParameter parameter, MySQLPageRequest pageRequest, Model model) {
+		logger.info("menuType : {}", menuType);
+		logger.info("pageRequest : {}", pageRequest);
+		
+		PageRequestParameter<BoardSearchParameter> pageRequestParameter = new PageRequestParameter<BoardSearchParameter>(pageRequest, parameter);
+		List<Board> boardList = boardService.getList(pageRequestParameter);
+		model.addAttribute("boardList", boardList);
+		return "/board/list";
+	}
+
+	
+	/**
+	 * 등록 화면
+	 * @param parameter
+	 * @param model
+	 */
+	@GetMapping("/form")
+	@RequestConfig(loginCheck = false)
+	public void form(BoardParameter parameter, Model model) {
+		logger.info("parameter : {}", parameter);
+		if(parameter.getBoardSeq() > 0) {
+			Board board = boardService.get(parameter.getBoardSeq());
+			model.addAttribute("board", board);
+		}
+		model.addAttribute("parameter", parameter);
+	}
+	
+	/**
+	 * 수정 화면
+	 * @param parameter
+	 * @param model
+	 */
+	@GetMapping("/edit/{boardSeq}")
+	@RequestConfig(loginCheck = false)
+	public String edit(@PathVariable(required = true) int boardSeq, BoardParameter parameter, Model model) {
+		Board board = boardService.get(boardSeq);
+		// null 처리
+		if (board == null) {
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] { "게시물" });
+		}
+		model.addAttribute("board", board);
+		model.addAttribute("parameter", parameter);
+		return "/board/form";
+	}
+	
+	/**
+	 * 상세 화면
+	 * @param boardSeq
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("/detail/{boardSeq}")
+	public String detail(@PathVariable int boardSeq, Model model) {
+		Board board = boardService.get(boardSeq);
+		// null 처리
+		if(board == null) {
+			throw new BaseException(BaseResponseCode.DATA_IS_NULL, new String[] { "게시물" });
+		}
+		model.addAttribute("board", board);
+		return "/board/detail";
+	}
 
 	/**
 	 * 등록 / 수정 처리.
 	 * 
 	 * @param parameter
 	 */
-	@PutMapping
-	@RequestConfig
-	@ApiOperation(value = "등록 / 수정 처리", notes = "신구 게시물 저장 및 기존 게시물 업데이트가 가능합니다.")
-	@ApiImplicitParams({ @ApiImplicitParam(name = "boardSeq", value = "게시물 번호", example = "1"),
-			@ApiImplicitParam(name = "boardType", value = "타입", example = "NOTICE"),
-			@ApiImplicitParam(name = "title", value = "제목", example = "spring"),
-			@ApiImplicitParam(name = "contents", value = "강좌", example = "spring 강좌") })
+//	@SuppressWarnings("deprecation")
+	//	@PutMapping
+	@PostMapping("/save")
+	@RequestConfig(loginCheck = false)
+	@ResponseBody
+//	@ApiOperation(value = "등록 / 수정 처리", notes = "신구 게시물 저장 및 기존 게시물 업데이트가 가능합니다.")
+//	@ApiImplicitParams({ @ApiImplicitParam(name = "boardSeq", value = "게시물 번호", example = "1"),
+//			@ApiImplicitParam(name = "boardType", value = "타입", example = "NOTICE"),
+//			@ApiImplicitParam(name = "title", value = "제목", example = "spring"),
+//			@ApiImplicitParam(name = "contents", value = "강좌", example = "spring 강좌") })
 	public BaseRespose<Integer> save(BoardParameter parameter) {
+		logger.info("parameter : {}", parameter);
 		// 제목 필수 체크
 		if (StringUtils.isEmpty(parameter.getTitle())) {
 			throw new BaseException(BaseResponseCode.VALIDATE_REQUIRED, new String[] { "title", "제목" });
