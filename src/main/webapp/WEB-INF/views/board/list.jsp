@@ -9,7 +9,6 @@
 <head>
 <meta charset="UTF-8">
 <title>Example</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 </head>
 <body>
 	<%-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -35,7 +34,7 @@
 	    </div>
 	  </div>
 	</nav> --%>
-	<form id="form" method="get" action="list">
+	<form id="form" method="get">
 		<input type="hidden" name="boardType" value="COMMUNITY" />
 		<div class="row mb-3">
 		    <label for="title" class="col-sm-2 col-form-label"><spring:message code="search.keyword" /></label>
@@ -62,7 +61,6 @@
 					<td><a href="/${menuType}/${board.boardSeq}"> ${board.title}</a></td>
 					<td>${board.viewCount}</td>
 					<td><fmt:formatDate value="${board.regDate}" pattern="yyyy.MM.dd HH:mm" /></td>
-					<td>@mdo</td>
 				</tr>
 				</c:forEach>
 				<c:if test="${fn:length(boardList) == 0}">
@@ -86,7 +84,7 @@
 		var $form = $('#form');
 		$form.bind('submit', function() {
 			$.ajax({
-				url: '/board/list',
+				url: '/${menuType}',
 				type: 'get',
 				data: $form.serialize(),
 				dataType: 'json',

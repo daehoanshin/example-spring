@@ -19,6 +19,7 @@ import me.xbb123.configuration.http.BaseRespose;
 import me.xbb123.framework.data.domain.PageRequestParameter;
 import me.xbb123.framework.web.bind.annotation.RequestConfig;
 import me.xbb123.mvc.domain.Board;
+import me.xbb123.mvc.domain.BoardType;
 import me.xbb123.mvc.domain.MenuType;
 import me.xbb123.mvc.domain.MySQLPageRequest;
 import me.xbb123.mvc.parameter.BoardParameter;
@@ -53,7 +54,7 @@ public class BoardController {
 			Model model) {
 		logger.info("menuType : {}", menuType);
 		logger.info("pageRequest : {}", pageRequest);
-
+		parameter.setBoardType(menuType.boardType());
 		PageRequestParameter<BoardSearchParameter> pageRequestParameter = new PageRequestParameter<BoardSearchParameter>(
 				pageRequest, parameter);
 		List<Board> boardList = boardService.getList(pageRequestParameter);
@@ -138,6 +139,7 @@ public class BoardController {
 		if (StringUtils.isEmpty(parameter.getContents())) {
 			throw new BaseException(BaseResponseCode.VALIDATE_REQUIRED, new String[] { "contents", "내용" });
 		}
+		parameter.setBoardType(menuType.boardType());
 		boardService.save(parameter);
 		return new BaseRespose<Integer>(parameter.getBoardSeq());
 	}

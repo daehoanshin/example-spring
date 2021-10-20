@@ -12,6 +12,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import me.xbb123.configuration.exception.BaseException;
 import me.xbb123.configuration.http.BaseResponseCode;
 import me.xbb123.framework.web.bind.annotation.RequestConfig;
+import me.xbb123.mvc.domain.MenuType;
 
 @SuppressWarnings("deprecation")
 public class BaseHandlerInterceptor extends HandlerInterceptorAdapter {
@@ -39,6 +40,12 @@ public class BaseHandlerInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
+		if(handler instanceof HandlerMethod) {
+			if(modelAndView != null) {
+				modelAndView.addObject("menuTypes", MenuType.values());
+			}
+		} 
+		 
 		logger.info("postHandle requestURI : {}", request.getRequestURI());
 	}
 	
