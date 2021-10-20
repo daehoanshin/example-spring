@@ -60,6 +60,7 @@ public class BoardRestController {
 	 * @return
 	 */
 	@GetMapping
+	@ResponseBody
 	@ApiOperation(value = "목록조회", notes = "게시물 목록 정보를 조회할 수 있습니다.")	
 	public BaseRespose<List<Board>> getList(
 			@ApiParam BoardSearchParameter parameter,
